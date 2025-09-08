@@ -49,7 +49,7 @@ app.get('/data', (req, res) => {
 });
 
 // POST /api/data becomes POST /data
-app.post('/api/data', authenticate, (req, res) => {
+app.post('/data', authenticate, (req, res) => {
   const newData = req.body;
   fs.writeFile(dataFilePath, JSON.stringify(newData, null, 2), (err) => {
     if (err) {
