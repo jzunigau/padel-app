@@ -15,7 +15,6 @@ const dataFilePath = path.join('/tmp', 'data.json');
 const seedDataPath = path.join(process.cwd(), 'data.json');
 
 // Synchronously check and create the data file if it doesn't exist.
-// This runs once per serverless function instantiation.
 try {
     if (!fs.existsSync(dataFilePath)) {
         if (fs.existsSync(seedDataPath)) {
@@ -29,25 +28,17 @@ try {
 }
 
 const authenticate = (req, res, next) => {
-  console.log('--- AUTHENTICATION CHECK ---');
-  console.log('Request Headers:', JSON.stringify(req.headers, null, 2));
   const authHeader = req.headers.authorization;
-  console.log('Received Authorization Header:', authHeader);
-  console.log('Expected Password:', ADMIN_PASSWORD);
-  console.log('Comparison result (authHeader === ADMIN_PASSWORD):', authHeader === ADMIN_PASSWORD);
-  
   if (authHeader && authHeader === ADMIN_PASSWORD) {
-    console.log('Authentication successful.');
     next();
   } else {
-    console.log('Authentication failed. Responding with 403.');
     res.status(403).json({ message: 'Forbidden: Invalid or missing credentials' });
   }
 };
 
-// The path is now relative to the /api route.
-// GET /api/data
-app.get('/api/data', (req, res) => {
+// Vercel routes /api/... to this file. Routes inside are relative to /api.
+// GET /api/data becomes GET /data
+app.get('/data', (req, res) => {
   fs.readFile(dataFilePath, 'utf8', (err, data) => {
     if (err) {
       console.error(err);
@@ -57,8 +48,8 @@ app.get('/api/data', (req, res) => {
   });
 });
 
-// POST /api/data
-app.post('/api/data', authenticate, (req, res) => {
+// POST /api/data becomes POST /data
+app.post('/data', authenticate, (req, res) => {
   const newData = req.body;
   fs.writeFile(dataFilePath, JSON.stringify(newData, null, 2), (err) => {
     if (err) {
