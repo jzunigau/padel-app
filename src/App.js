@@ -35,19 +35,15 @@ const App = () => {
 
   // Guardar datos en el backend cuando cambian
   useEffect(() => {
-    // Do not save if not authenticated or if there's no data to save initially
     if (!isAuthenticated) {
       return;
     }
-    // Avoid initial empty save
-    if (players.length === 0 && teams.length === 0 && matches.length === 0) {
-        const initialDataFetched = sessionStorage.getItem('initialDataFetched');
-        if (!initialDataFetched) {
-            sessionStorage.setItem('initialDataFetched', 'true');
-            return;
-        }
+    // Avoid initial empty save by checking if data has been fetched at least once
+    const initialDataFetched = sessionStorage.getItem('initialDataFetched');
+    if (players.length === 0 && teams.length === 0 && matches.length === 0 && !initialDataFetched) {
+        sessionStorage.setItem('initialDataFetched', 'true');
+        return;
     }
-
 
     const dataToSave = {
       players,
@@ -199,9 +195,9 @@ const App = () => {
       alert("Los puntajes deben ser números");
       return;
     }
-
-    if (score1 <= 0 || score2 <= 0) {
-      alert("Los puntajes deben ser mayores que 0");
+    
+    if (score1 < 0 || score2 < 0) {
+      alert("Los puntajes no pueden ser negativos");
       return;
     }
 
@@ -330,7 +326,7 @@ const App = () => {
                   <button onClick={handleLogin} className="bg-white text-green-700 px-4 py-2 rounded-md font-bold hover:bg-green-100">
                     Login
                   </button>
-                  {authError && <p className="text-red-300 text-sm">{authError}</p>}
+                  {authError && <p className="text-red-300 text-sm absolute top-full right-0 mt-1">{authError}</p>}
                 </div>
               ) : (
                 <button onClick={handleLogout} className="bg-white text-red-500 px-4 py-2 rounded-md font-bold hover:bg-red-100">
@@ -342,17 +338,22 @@ const App = () => {
 
           <div className="border-b border-gray-200 bg-gray-50">
             <nav className="flex space-x-8 px-6">
-              {['players', 'teams', 'matches', 'ranking'].map(tabId => (
+              {[
+                { id: 'players', label: 'JUGADORES' },
+                { id: 'teams', label: 'PAREJAS' },
+                { id: 'matches', label: 'PARTIDOS' },
+                { id: 'ranking', label: 'RANKING' }
+              ].map(tab => (
                 <button
-                  key={tabId}
-                  onClick={() => setActiveTab(tabId)}
+                  key={tab.id}
+                  onClick={() => setActiveTab(tab.id)}
                   className={`py-4 px-2 border-b-2 font-bold text-sm uppercase tracking-wider transition-all duration-300 ${
-                    activeTab === tabId
+                    activeTab === tab.id
                       ? 'border-green-600 text-green-700 bg-green-50'
                       : 'border-transparent text-gray-600 hover:text-green-600 hover:bg-gray-100'
                   }`}
                 >
-                  {tabId}
+                  {tab.label}
                 </button>
               ))}
             </nav>
@@ -400,9 +401,7 @@ const App = () => {
                                 onClick={() => removePlayer(player.id)}
                                 className="text-red-500 hover:text-red-700 transition-colors duration-200 bg-red-50 p-2 rounded-full hover:bg-red-100"
                               >
-                                <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
-                                </svg>
+                                <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" /></svg>
                               </button>
                             )}
                           </div>
@@ -455,9 +454,7 @@ const App = () => {
                         </div>
 
                         <div className="text-center">
-                          <p className="text-xl text-gray-700 mb-4">
-                            Jugadores seleccionados: {selectedTeamPlayers.length}/2
-                          </p>
+                          <p className="text-xl text-gray-700 mb-4">Jugadores seleccionados: {selectedTeamPlayers.length}/2</p>
                           {selectedTeamPlayers.length === 2 && (
                             <div className="mb-6 p-6 bg-green-100 border-2 border-green-300 rounded-xl">
                               <p className="text-2xl font-bold text-green-800">
@@ -495,9 +492,7 @@ const App = () => {
                                 onClick={() => removeTeam(team.id)}
                                 className="text-red-500 hover:text-red-700 transition-colors duration-200 bg-red-50 p-2 rounded-full hover:bg-red-100"
                               >
-                                <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
-                                </svg>
+                                <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" /></svg>
                               </button>
                             )}
                           </div>
@@ -524,11 +519,20 @@ const App = () => {
                 )}
               </div>
             )}
-            
-            {/* Other tabs (matches, ranking) are mostly view-only so less changes needed, except for action buttons */}
+
             {activeTab === 'matches' && (
               <div className="space-y-8">
-                 {pendingMatches.length > 0 && (
+                <div className="bg-gray-50 rounded-xl p-8 border border-gray-200">
+                  <h3 className="text-2xl font-bold text-gray-800 mb-6 text-center">INFORMACIÓN DEL CAMPEONATO</h3>
+                  <div className="grid md:grid-cols-4 gap-6">
+                    <div className="bg-white rounded-xl p-6 shadow-lg text-center"><p className="text-gray-600 text-lg font-semibold mb-2">JUGADORES</p><p className="text-4xl font-bold text-gray-800">{players.length}</p></div>
+                    <div className="bg-white rounded-xl p-6 shadow-lg text-center"><p className="text-gray-600 text-lg font-semibold mb-2">PAREJAS</p><p className="text-4xl font-bold text-gray-800">{teams.length}</p></div>
+                    <div className="bg-white rounded-xl p-6 shadow-lg text-center"><p className="text-gray-600 text-lg font-semibold mb-2">PARTIDOS TOTALES</p><p className="text-4xl font-bold text-gray-800">{matches.length}</p></div>
+                    <div className="bg-white rounded-xl p-6 shadow-lg text-center"><p className="text-gray-600 text-lg font-semibold mb-2">PENDIENTES</p><p className="text-4xl font-bold text-gray-800">{pendingMatches.length}</p></div>
+                  </div>
+                </div>
+
+                {pendingMatches.length > 0 && (
                   <div>
                     <h3 className="text-2xl font-bold text-gray-800 mb-6 text-center">PARTIDOS PENDIENTES ({pendingMatches.length})</h3>
                     <div className="space-y-4">
@@ -536,9 +540,7 @@ const App = () => {
                         <div key={match.id} className="bg-white border-2 border-gray-200 rounded-xl p-6 shadow-lg hover:shadow-2xl transition-all duration-300">
                           <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
                             <div>
-                              <p className="text-2xl font-bold text-gray-800">
-                                {match.team1Name} vs {match.team2Name}
-                              </p>
+                              <p className="text-2xl font-bold text-gray-800">{match.team1Name} vs {match.team2Name}</p>
                               <p className="text-gray-600 text-lg">Fecha: {match.date}</p>
                             </div>
                             {isAuthenticated && (
@@ -555,17 +557,94 @@ const App = () => {
                     </div>
                   </div>
                 )}
-                {/* Rest of the matches tab content */}
+
+                {completedMatches.length > 0 && (
+                  <div>
+                    <h3 className="text-2xl font-bold text-gray-800 mb-6 text-center">PARTIDOS COMPLETADOS ({completedMatches.length})</h3>
+                    <div className="space-y-4">
+                      {completedMatches.map(match => {
+                        const winner = teams.find(t => t.id === match.winnerId);
+                        return (
+                          <div key={match.id} className="bg-green-50 border-2 border-green-200 rounded-xl p-6">
+                            <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
+                              <div>
+                                <p className="text-2xl font-bold text-gray-800">{match.team1Name} {match.score1} - {match.score2} {match.team2Name}</p>
+                                <p className="text-lg text-green-800 font-semibold">Ganador: {winner?.name}</p>
+                                <p className="text-gray-600">Fecha: {match.date}</p>
+                              </div>
+                              <span className="bg-green-600 text-white px-6 py-2 rounded-xl text-xl font-bold">COMPLETADO</span>
+                            </div>
+                          </div>
+                        );
+                      })}
+                    </div>
+                  </div>
+                )}
+
+                {matches.length === 0 && (
+                  <div className="text-center py-16 text-gray-500">
+                    <svg className="mx-auto h-16 w-16 text-gray-400 mb-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2" /></svg>
+                    <p className="text-2xl">No se han generado partidos</p>
+                    <p className="text-xl mt-2">Crea parejas y genera los partidos para comenzar</p>
+                  </div>
+                )}
               </div>
             )}
 
             {activeTab === 'ranking' && (
-              // Ranking is view-only, no changes needed here
               <div>
-                {/* ... ranking JSX ... */}
+                <div className="bg-gray-50 rounded-xl p-8 border border-gray-200 mb-8">
+                  <h3 className="text-2xl font-bold text-gray-800 mb-4 text-center">CLASIFICACIÓN FINAL</h3>
+                </div>
+
+                {ranking.length === 0 ? (
+                  <div className="text-center py-16 text-gray-500">
+                    <svg className="mx-auto h-16 w-16 text-gray-400 mb-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z" /></svg>
+                    <p className="text-2xl">No hay parejas en el ranking</p>
+                  </div>
+                ) : (
+                  <div className="overflow-x-auto">
+                    <table className="min-w-full bg-white border-2 border-gray-200 rounded-xl shadow-lg">
+                      <thead className="bg-gray-50">
+                        <tr>
+                          <th className="px-8 py-6 text-left text-lg font-bold text-gray-800 uppercase tracking-wider">Posición</th>
+                          <th className="px-8 py-6 text-left text-lg font-bold text-gray-800 uppercase tracking-wider">Pareja</th>
+                          <th className="px-8 py-6 text-left text-lg font-bold text-gray-800 uppercase tracking-wider">PJ</th>
+                          <th className="px-8 py-6 text-left text-lg font-bold text-gray-800 uppercase tracking-wider">V</th>
+                          <th className="px-8 py-6 text-left text-lg font-bold text-gray-800 uppercase tracking-wider">D</th>
+                          <th className="px-8 py-6 text-left text-lg font-bold text-gray-800 uppercase tracking-wider">Juegos Ganados</th>
+                        </tr>
+                      </thead>
+                      <tbody className="divide-y divide-gray-200">
+                        {ranking.map((team, index) => (
+                          <tr key={team.id} className={`transition-all duration-300 hover:bg-gray-50 ${
+                            index === 0 ? 'bg-yellow-50 border-t-4 border-yellow-400' : 
+                            index === 1 ? 'bg-gray-50 border-t-4 border-gray-300' : 
+                            index === 2 ? 'bg-orange-50 border-t-4 border-orange-400' : ''
+                          }`}>
+                            <td className="px-8 py-6 whitespace-nowrap">
+                              <div className="flex items-center">
+                                {index < 3 && (
+                                  <svg className={`w-8 h-8 mr-4 ${
+                                    index === 0 ? 'text-yellow-500' : index === 1 ? 'text-gray-500' : 'text-orange-500'
+                                  }`} fill="currentColor" viewBox="0 0 20 20"><path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" /></svg>
+                                )}
+                                <span className="text-2xl font-bold">{index + 1}º</span>
+                              </div>
+                            </td>
+                            <td className="px-8 py-6 whitespace-nowrap text-2xl font-bold text-gray-800">{team.name}</td>
+                            <td className="px-8 py-6 whitespace-nowrap text-2xl font-bold text-center">{(team.wins || 0) + (team.losses || 0)}</td>
+                            <td className="px-8 py-6 whitespace-nowrap text-2xl font-bold text-center text-green-600">{team.wins || 0}</td>
+                            <td className="px-8 py-6 whitespace-nowrap text-2xl font-bold text-center text-red-600">{team.losses || 0}</td>
+                            <td className="px-8 py-6 whitespace-nowrap text-2xl font-bold text-center">{team.gamesWon || 0}</td>
+                          </tr>
+                        ))}
+                      </tbody>
+                    </table>
+                  </div>
+                )}
               </div>
             )}
-
           </div>
         </div>
 
@@ -573,38 +652,21 @@ const App = () => {
           <div className="fixed inset-0 bg-black bg-opacity-70 flex items-center justify-center p-4 z-50">
             <div className="bg-white rounded-2xl max-w-md w-full p-8 shadow-2xl">
               <h3 className="text-2xl font-bold text-gray-800 mb-6 text-center">REGISTRAR RESULTADO</h3>
-              <p className="text-xl text-gray-600 mb-6 text-center">
-                {selectedMatch.team1Name} vs {selectedMatch.team2Name}
-              </p>
+              <p className="text-xl text-gray-600 mb-6 text-center">{selectedMatch.team1Name} vs {selectedMatch.team2Name}</p>
               
               <div className="space-y-6">
                 <div>
                   <label className="block text-lg font-bold text-gray-700 mb-3">RESULTADO</label>
                   <div className="flex space-x-6">
-                    <input
-                      type="number"
-                      value={matchResult.score1}
-                      onChange={(e) => setMatchResult({...matchResult, score1: e.target.value})}
-                      placeholder="0"
-                      className="w-full px-4 py-3 border-2 border-gray-300 rounded-xl text-center text-2xl"
-                    />
-                    <input
-                      type="number"
-                      value={matchResult.score2}
-                      onChange={(e) => setMatchResult({...matchResult, score2: e.target.value})}
-                      placeholder="0"
-                      className="w-full px-4 py-3 border-2 border-gray-300 rounded-xl text-center text-2xl"
-                    />
+                    <input type="number" value={matchResult.score1} onChange={(e) => setMatchResult({...matchResult, score1: e.target.value})} placeholder="0" min="0" className="w-24 px-4 py-3 border-2 border-gray-300 rounded-xl focus:ring-4 focus:ring-green-200 focus:border-green-500 text-center text-2xl font-bold" />
+                    <span className="flex items-center text-2xl font-bold text-gray-500">-</span>
+                    <input type="number" value={matchResult.score2} onChange={(e) => setMatchResult({...matchResult, score2: e.target.value})} placeholder="0" min="0" className="w-24 px-4 py-3 border-2 border-gray-300 rounded-xl focus:ring-4 focus:ring-green-200 focus:border-green-500 text-center text-2xl font-bold" />
                   </div>
                 </div>
 
                 <div>
                   <label className="block text-lg font-bold text-gray-700 mb-3">GANADOR</label>
-                  <select
-                    value={matchResult.winner}
-                    onChange={(e) => setMatchResult({...matchResult, winner: e.target.value})}
-                    className="w-full px-4 py-3 border-2 border-gray-300 rounded-xl"
-                  >
+                  <select value={matchResult.winner} onChange={(e) => setMatchResult({...matchResult, winner: e.target.value})} className="w-full px-4 py-3 border-2 border-gray-300 rounded-xl focus:ring-4 focus:ring-green-200 focus:border-green-500 text-lg">
                     <option value="">Selecciona ganador...</option>
                     <option value={selectedMatch.team1Id}>{selectedMatch.team1Name}</option>
                     <option value={selectedMatch.team2Id}>{selectedMatch.team2Name}</option>
@@ -613,18 +675,8 @@ const App = () => {
               </div>
 
               <div className="flex space-x-4 mt-8">
-                <button
-                  onClick={closeMatchModal}
-                  className="flex-1 px-6 py-3 border-2 border-gray-300 text-gray-700 rounded-xl hover:bg-gray-50"
-                >
-                  CANCELAR
-                </button>
-                <button
-                  onClick={saveMatchResult}
-                  className="flex-1 bg-green-600 text-white px-6 py-3 rounded-xl hover:bg-green-700"
-                >
-                  GUARDAR
-                </button>
+                <button onClick={closeMatchModal} className="flex-1 px-6 py-3 border-2 border-gray-300 text-gray-700 rounded-xl hover:bg-gray-50 transition-all duration-300 font-bold text-lg">CANCELAR</button>
+                <button onClick={saveMatchResult} className="flex-1 bg-green-600 text-white px-6 py-3 rounded-xl hover:bg-green-700 transition-all duration-300 font-bold text-lg shadow-lg">GUARDAR</button>
               </div>
             </div>
           </div>
