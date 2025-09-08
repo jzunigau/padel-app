@@ -22,7 +22,7 @@ const App = () => {
 
   // Cargar datos del backend al iniciar
   useEffect(() => {
-    fetch('http://localhost:3001/api/data')
+    fetch('/api/data') // Use proxy
       .then(response => response.json())
       .then(data => {
         if (data) {
@@ -47,7 +47,7 @@ const App = () => {
       matches,
     };
 
-    fetch('http://localhost:3001/api/data', {
+    fetch('/api/data', { // Use proxy
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
@@ -208,13 +208,11 @@ const App = () => {
       return;
     }
 
-    // Validation for ties
     if (winner === 'tie' && score1 !== score2) {
       alert("Para registrar un empate, los puntajes deben ser iguales.");
       return;
     }
 
-    // Validation for a winner
     if (winner !== 'tie' && score1 === score2) {
       alert("No puede haber un empate si se selecciona un ganador.");
       return;
@@ -292,7 +290,7 @@ const App = () => {
 
       const lossesA = a.losses || 0;
       const lossesB = b.losses || 0;
-      if (lossesA !== lossesB) return lossesA - lossesB; // Fewer losses is better
+      if (lossesA !== lossesB) return lossesA - lossesB;
       
       const diffA = (a.gamesWon || 0) - (a.gamesLost || 0);
       const diffB = (b.gamesWon || 0) - (b.gamesLost || 0);
@@ -376,6 +374,70 @@ const App = () => {
           </div>
 
           <div className="p-8">
+            {activeTab === 'players' && (
+                <div>
+                    {isAuthenticated && (
+                        <div className="bg-gray-50 rounded-xl p-8 border border-gray-200 mb-8">
+                            <h3 className="text-2xl font-bold text-gray-800 mb-6 text-center">GESTIÓN DE JUGADORES</h3>
+                            <div className="flex space-x-4 max-w-md mx-auto">
+                                <input
+                                type="text"
+                                value={newPlayerName}
+                                onChange={(e) => setNewPlayerName(e.target.value)}
+                                placeholder="Nombre del jugador"
+                                className="flex-1 px-6 py-3 border-2 border-gray-300 rounded-lg focus:ring-4 focus:ring-green-200 focus:border-green-500 text-lg"
+                                onKeyPress={(e) => e.key === 'Enter' && addPlayer()}
+                                />
+                                <button
+                                onClick={addPlayer}
+                                className="bg-green-600 text-white px-8 py-3 rounded-lg hover:bg-green-700 transition-all duration-300 font-bold text-lg shadow-lg hover:shadow-xl transform hover:-translate-y-1"
+                                >
+                                AÑADIR
+                                </button>
+                            </div>
+                        </div>
+                    )}
+
+                    <div>
+                        <h3 className="text-2xl font-bold text-gray-800 mb-6 text-center">JUGADORES REGISTRADOS ({players.length})</h3>
+                        {players.length === 0 ? (
+                            <div className="text-center py-16 text-gray-500">
+                            <p className="text-xl">No hay jugadores registrados</p>
+                            </div>
+                        ) : (
+                            <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
+                            {players.map(player => (
+                                <div key={player.id} className="bg-white border-2 border-gray-200 rounded-xl p-6 shadow-lg hover:shadow-2xl transition-all duration-300 transform hover:-translate-y-2">
+                                <div className="flex justify-between items-start mb-4">
+                                    <h4 className="text-2xl font-bold text-gray-800">{player.name}</h4>
+                                    {isAuthenticated && (
+                                    <button
+                                        onClick={() => removePlayer(player.id)}
+                                        className="text-red-500 hover:text-red-700 transition-colors duration-200 bg-red-50 p-2 rounded-full hover:bg-red-100"
+                                    >
+                                        <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" /></svg>
+                                    </button>
+                                    )}
+                                </div>
+                                </div>
+                            ))}
+                            </div>
+                        )}
+
+                        {isAuthenticated && players.length >= 2 && (
+                            <div className="mt-12 text-center">
+                            <button
+                                onClick={() => setActiveTab('teams')}
+                                className="bg-green-600 text-white px-12 py-4 rounded-xl hover:bg-green-700 transition-all duration-300 font-bold text-xl shadow-2xl hover:shadow-3xl transform hover:-translate-y-1"
+                            >
+                                CREAR PAREJAS
+                            </button>
+                            </div>
+                        )}
+                    </div>
+                </div>
+            )}
+
             {activeTab === 'teams' && (
                 <div>
                     {isAuthenticated && (
