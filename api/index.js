@@ -29,10 +29,18 @@ try {
 }
 
 const authenticate = (req, res, next) => {
+  console.log('--- AUTHENTICATION CHECK ---');
+  console.log('Request Headers:', JSON.stringify(req.headers, null, 2));
   const authHeader = req.headers.authorization;
+  console.log('Received Authorization Header:', authHeader);
+  console.log('Expected Password:', ADMIN_PASSWORD);
+  console.log('Comparison result (authHeader === ADMIN_PASSWORD):', authHeader === ADMIN_PASSWORD);
+  
   if (authHeader && authHeader === ADMIN_PASSWORD) {
+    console.log('Authentication successful.');
     next();
   } else {
+    console.log('Authentication failed. Responding with 403.');
     res.status(403).json({ message: 'Forbidden: Invalid or missing credentials' });
   }
 };
