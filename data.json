@@ -1,0 +1,164 @@
+{
+  "players": [
+    {
+      "id": 1757346897771,
+      "name": "j1"
+    },
+    {
+      "id": 1757346901552,
+      "name": "j2"
+    },
+    {
+      "id": 1757346909066,
+      "name": "j3"
+    },
+    {
+      "id": 1757346912816,
+      "name": "j4"
+    },
+    {
+      "id": 1757346919496,
+      "name": "j5"
+    },
+    {
+      "id": 1757346923946,
+      "name": "j6"
+    },
+    {
+      "id": 1757346927932,
+      "name": "j7"
+    },
+    {
+      "id": 1757346931096,
+      "name": "j8"
+    }
+  ],
+  "teams": [
+    {
+      "id": 1757346936481,
+      "name": "j1 & j2",
+      "playerIds": [
+        1757346897771,
+        1757346901552
+      ],
+      "wins": 2,
+      "losses": 1,
+      "gamesWon": 16,
+      "gamesLost": 6,
+      "ties": 0
+    },
+    {
+      "id": 1757346939492,
+      "name": "j3 & j4",
+      "playerIds": [
+        1757346909066,
+        1757346912816
+      ],
+      "wins": 0,
+      "losses": 1,
+      "gamesWon": 6,
+      "gamesLost": 12,
+      "ties": 1
+    },
+    {
+      "id": 1757346942296,
+      "name": "j5 & j6",
+      "playerIds": [
+        1757346919496,
+        1757346923946
+      ],
+      "wins": 1,
+      "losses": 0,
+      "gamesWon": 12,
+      "gamesLost": 10,
+      "ties": 1
+    },
+    {
+      "id": 1757346944730,
+      "name": "j7 & j8",
+      "playerIds": [
+        1757346927932,
+        1757346931096
+      ],
+      "wins": 0,
+      "losses": 1,
+      "gamesWon": 0,
+      "gamesLost": 6,
+      "ties": 0
+    }
+  ],
+  "matches": [
+    {
+      "id": 1757346947831,
+      "team1Id": 1757346936481,
+      "team2Id": 1757346939492,
+      "team1Name": "j1 & j2",
+      "team2Name": "j3 & j4",
+      "score1": 6,
+      "score2": 0,
+      "winnerId": 1757346936481,
+      "completed": true,
+      "date": "2025-09-08"
+    },
+    {
+      "id": 1757346947832,
+      "team1Id": 1757346936481,
+      "team2Id": 1757346942296,
+      "team1Name": "j1 & j2",
+      "team2Name": "j5 & j6",
+      "score1": 4,
+      "score2": 6,
+      "winnerId": 1757346942296,
+      "completed": true,
+      "date": "2025-09-08"
+    },
+    {
+      "id": 1757346947833,
+      "team1Id": 1757346936481,
+      "team2Id": 1757346944730,
+      "team1Name": "j1 & j2",
+      "team2Name": "j7 & j8",
+      "score1": 6,
+      "score2": 0,
+      "winnerId": 1757346936481,
+      "completed": true,
+      "date": "2025-09-08"
+    },
+    {
+      "id": 1757346947834,
+      "team1Id": 1757346939492,
+      "team2Id": 1757346942296,
+      "team1Name": "j3 & j4",
+      "team2Name": "j5 & j6",
+      "score1": 6,
+      "score2": 6,
+      "winnerId": "tie",
+      "completed": true,
+      "date": "2025-09-08"
+    },
+    {
+      "id": 1757346947835,
+      "team1Id": 1757346939492,
+      "team2Id": 1757346944730,
+      "team1Name": "j3 & j4",
+      "team2Name": "j7 & j8",
+      "score1": null,
+      "score2": null,
+      "winnerId": null,
+      "completed": false,
+      "date": "2025-09-08"
+    },
+    {
+      "id": 1757346947836,
+      "team1Id": 1757346942296,
+      "team2Id": 1757346944730,
+      "team1Name": "j5 & j6",
+      "team2Name": "j7 & j8",
+      "score1": null,
+      "score2": null,
+      "winnerId": null,
+      "completed": false,
+      "date": "2025-09-08"
+    }
+  ]
+}
