@@ -18,6 +18,7 @@ const App = () => {
   const [password, setPassword] = useState("");
   const [isAuthenticated, setIsAuthenticated] = useState(false);
   const [authError, setAuthError] = useState("");
+  const [isInitialLoad, setIsInitialLoad] = useState(true);
 
   // Cargar datos del backend al iniciar
   useEffect(() => {
@@ -30,19 +31,14 @@ const App = () => {
           setMatches(data.matches || []);
         }
       })
-      .catch(error => console.error('Error al cargar los datos:', error));
+      .catch(error => console.error('Error al cargar los datos:', error))
+      .finally(() => setIsInitialLoad(false));
   }, []);
 
   // Guardar datos en el backend cuando cambian
   useEffect(() => {
-    if (!isAuthenticated) {
+    if (isInitialLoad || !isAuthenticated) {
       return;
-    }
-    // Avoid initial empty save by checking if data has been fetched at least once
-    const initialDataFetched = sessionStorage.getItem('initialDataFetched');
-    if (players.length === 0 && teams.length === 0 && matches.length === 0 && !initialDataFetched) {
-        sessionStorage.setItem('initialDataFetched', 'true');
-        return;
     }
 
     const dataToSave = {
@@ -55,12 +51,21 @@ const App = () => {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
-        'Authorization': password, // Send password for authorization
+        'Authorization': password,
       },
       body: JSON.stringify(dataToSave),
     })
-    .catch(error => console.error('Error al guardar los datos:', error));
-  }, [players, teams, matches, isAuthenticated, password]);
+    .then(response => {
+        if (!response.ok) {
+            console.error('Failed to save data. Status:', response.status);
+            alert('Error: No se pudieron guardar los datos. Verifique la contraseña y la conexión con el servidor.');
+        }
+    })
+    .catch(error => {
+        console.error('Error al guardar los datos:', error);
+        alert('Error: No se pudieron guardar los datos. Verifique la conexión con el servidor.');
+    });
+  }, [players, teams, matches, isAuthenticated, password, isInitialLoad]);
 
   const handleLogin = () => {
     if (password === ADMIN_PASSWORD) {
@@ -183,7 +188,7 @@ const App = () => {
   };
 
   const saveMatchResult = () => {
-    if (!matchResult.score1 || !matchResult.score2 || !matchResult.winner) {
+    if (matchResult.score1 === "" || matchResult.score2 === "" || !matchResult.winner) {
       alert("Por favor, completa todos los campos");
       return;
     }
@@ -197,7 +202,7 @@ const App = () => {
     }
     
     if (score1 < 0 || score2 < 0) {
-      alert("Los puntajes no pueden ser negativos");
+      alert("El puntaje no puede ser un número negativo");
       return;
     }
 
