@@ -325,7 +325,7 @@ const App = () => {
       <div className="container mx-auto px-4 py-8">
         <div className="bg-white rounded-2xl shadow-2xl overflow-hidden">
           <div className="bg-gradient-to-r from-green-600 to-green-800 text-white p-6 relative">
-            <h1 className="text-4xl font-bold text-center mb-2">PADEL CHAMPIONSHIP</h1>
+            <h1 className="text-4xl font-bold text-center mb-2">PADEL AMIGOS S+40</h1>
             <p className="text-center text-green-100 text-lg">Sistema de gestión de partidos por parejas</p>
             
             <div className="absolute top-4 right-4">
@@ -601,6 +601,12 @@ const App = () => {
             )}
           </div>
         </div>
+
+        <footer className="text-center py-4">
+          <p className="text-gray-400 text-sm">
+            Desarrollado por Jorge Zuñiga Ulsen &copy; 2025
+          </p>
+        </footer>
 
         {isAuthenticated && selectedMatch && (
           <div className="fixed inset-0 bg-black bg-opacity-70 flex items-center justify-center p-4 z-50">
